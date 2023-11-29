@@ -1,0 +1,20 @@
+
+ROADMAP => 
+
+	* Kullanıcı komut girişi yapıcak ( encrypt | decrypt )
+	* Girilen komutun yanında şifrelemek istediği dosyanın yolu (file_path)
+	* Sistemde (İşletim sistemi içinde) bu programın ürettiği anahtar var mı yok ? ['WINDOWS', 'LINUX', 'UNIX', 'MACOS']
+		.git	
+	* Anahtar YOKSA
+		-> Yeni bir anahtar üretip programın belirtmiş olduğu yere bu anahtarı yerleştirmek
+
+	* Anahtar VARSA
+		-> Belirtilen yerdeki (key_path) anahtarı alıp kullanılacak şekilde ayarlamak
+	
+	* Alınan dosya yolu ('\0', ' ', '%<') => (soldaki şartların olmaması gerekiyor) (ASCII TABLE)
+	* Alınan dosya yolunda [file_path] gerçekten böyle bir dosya var mı ?
+		-> VARSA
+			-> Dosyayı belirtilen komuta göre ['encrypt', 'decrypt'] şifrele veya çöz.
+		-> YOKSA
+			-> Hata ver ['Belirtilen yolda böyle bir dosya bulunamadı.']
+	

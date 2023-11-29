@@ -1,3 +1,4 @@
+from typing import Any
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 
@@ -5,8 +6,7 @@ from Crypto.Random import get_random_bytes
 class FileEncryptor():
     __key: bytes
     __initalizationVector: bytes
-    __cipher: any
-
+    __cipher: Any
     def __init__(self, key, initializer) -> None:
         self.__key = key
         self.__initalizationVector = initializer

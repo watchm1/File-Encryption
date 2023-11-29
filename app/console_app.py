@@ -13,7 +13,7 @@ class Application():
         self.ssh_directory = ""
         self.public_key_path = ""
         self.private_key_path = ""
-        self.key: paramiko.RSAKey = None
+        self.key = None
         pass
 
     def Generate_ssh_key_for_applicaiton(self):
@@ -59,7 +59,7 @@ class Application():
                 print(f"The program starting encryption for {args.file_path}")
                 fileEncryptor.EncryptFile(args.file_path)
             elif args.command == "decrypt":
-                fileEncryptor.DecryptFile(args.file_path)
+                fileEncryptor.DecryptFile(args.file_path, args.original_file)
                 print(f"The program starting decryption for {args.file_path}")
 
 
