@@ -1,51 +1,49 @@
-from typing import Any
-from Crypto.Cipher import AES
-from Crypto.Random import get_random_bytes
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+from .handle_key import AESManager
+import os
 
 
-class FileEncryptor():
-    __key: bytes
-    __initalizationVector: bytes
-    __cipher: Any
-    def __init__(self, key, initializer) -> None:
-        self.__key = key
-        self.__initalizationVector = initializer
-        self.__cipher = AES.new(self.__key, AES.MODE_CBC, self.__initalizationVector)
-        print(self.__key)
-        print(self.__initalizationVector)
-        print(self.__key)
-        print(self.__initalizationVector)
+class FileEncryptor:
+    def __init__(self, aes_manager: AESManager) -> None:
+        self.aes_manager = aes_manager
 
-    def EncryptTest(self, file_path):
-        print("encrypt script running.")
-
-    def EncryptFile(self, file_path) -> bool:
+    def encrypt_file(self, file_path: str, output_path: str) -> bool:
         try:
             with open(file_path, 'rb') as f:
                 file_content = f.read()
-            file_content_padded = file_content + b' ' * (16 - len(file_content) % 16)
-            encryptedFile = self.__cipher.encrypt(file_content_padded)
-            with open(encryptedFile, 'wb') as f:
-                f.write(encryptedFile)
-        except Exception as e:
-            print(e)
-            return False
-        print("file encrypted..")
-        return True
 
-    def DecryptFileTest(self, file_path, original_file):
-        print("Decrypt file running. ")
+            iv = os.urandom(16)
+            cipher = Cipher(algorithms.AES(self.aes_manager.key), modes.CFB(iv), backend=default_backend())
+            encryptor = cipher.encryptor()
+            ciphertext = encryptor.update(file_content) + encryptor.finalize()
 
-    def DecryptFile(self, file_path, original_file) -> bool:
-        try:
-            with open(file_path, 'rb') as f:
-                file_content = f.read()
-            decrypted_file_content_padded = self.__cipher.decrypt(file_content)
-            decrypted_file_content = decrypted_file_content_padded.rstrip(b' ')
-            decrypted_file_name = original_file
-            with open(decrypted_file_name, 'wb') as f:
-                f.write(decrypted_file_content)
+            with open(output_path, 'wb') as f:
+                f.write(iv + ciphertext)
+
+            print(f"File encrypted and saved to {output_path}")
             return True
-        except:
-            print("file cannot decrypted")
+        except Exception as e:
+            print(f"Encryption error: {e}")
+            return False
+
+    def decrypt_file(self, encrypted_file_path: str, output_path: str) -> bool:
+        try:
+            with open(encrypted_file_path, 'rb') as f:
+                data = f.read()
+
+            iv = data[:16]
+            ciphertext = data[16:]
+
+            cipher = Cipher(algorithms.AES(self.aes_manager.key), modes.CFB(iv), backend=default_backend())
+            decryptor = cipher.decryptor()
+            decrypted_content = decryptor.update(ciphertext) + decryptor.finalize()
+
+            with open(output_path, 'wb') as f:
+                f.write(decrypted_content)
+
+            print(f"File decrypted and saved to {output_path}")
+            return True
+        except Exception as e:
+            print(f"Decryption error: {e}")
             return False
