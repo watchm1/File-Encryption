@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 import paramiko
 from encryptor import FileEncryptor
 from Crypto.PublicKey import RSA
@@ -11,22 +12,26 @@ from encryptor.handle_key import AESManager
 class Application():
 
     def __init__(self) -> None:
-        self.home_directory = os.path.expanduser("~")
+        self.home_directory = os.path.dirname(sys.modules['__main__'].__file__)
         self.ssh_directory = os.path.join(self.home_directory, ".ssh")
         self.private_key_file_path = os.path.join(self.ssh_directory, "encryption_key_private.pem")
         self.key = None
+        print(os.path.exists(self.private_key_file_path))
         pass
 
     def Generate_ssh_key_for_applicaiton(self):
-        self.key_handler = AESManager(b'1234')
+        self.key_handler = AESManager()
+        if not os.path.exists(self.ssh_directory):
+            os.makedirs(".ssh")
+            print(".ssh folder created")
         if os.path.exists(self.private_key_file_path):
             self.key_handler.load_key_from_file(self.private_key_file_path)
         else:
-            self.key_handler.derive_key(b'1234')
+            #self.key_handler.derive_key(b'1234')
             self.key_handler.save_key_to_file(self.private_key_file_path)
+            print("cryption key created on .ssh folder")
  
     def RunApplication(self):
-
         self.Generate_ssh_key_for_applicaiton()
         args = self.parser.parse_args()
         self.file_encryptor = FileEncryptor(self.key_handler)
@@ -38,10 +43,10 @@ class Application():
             self.key_handler.delete_key_file(self.private_key_file_path)
         elif args.command == "encrypt":
             print(f"The program starting encryption for {args.file_path}")
-            self.file_encryptor.encrypt_file(args.file_path, "test.txt")
+            self.file_encryptor.encrypt_file(args.file_path, "en_"+str(os.path.basename(args.file_path)))
         elif args.command == "decrypt":
             print(f"The program starting decryption for {args.file_path}")
-            self.file_encryptor.decrypt_file(args.file_path, "wallpaper2.png")
+            self.file_encryptor.decrypt_file(args.file_path, "de"+os.path.basename(args.file_path)[2:])
     
     def ConfigureApplication(self):
         self.parser = argparse.ArgumentParser(description="Image Encrypt Application")

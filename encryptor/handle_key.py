@@ -3,26 +3,19 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 import os
-import os
-
 
 class AESManager:
-    def __init__(self, password: bytes) -> None:
-        self.key = self.derive_key(password)
-
-    def derive_key(self, password: bytes) -> bytes:
-        salt = os.urandom(16)
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            iterations=100000,
-            length=32,
-            salt=salt,
-            backend=default_backend()
-        )
-        key = kdf.derive(password)
-        return key
 
     def save_key_to_file(self, key_file):
+        
+        while True:
+            g_input = input('Lütfen 16 karakterlik anahtarı giriniz: ')
+            if len(g_input)==16:
+                break
+            else:
+                print(f"{len(g_input)} karakter girdiniz. Tekrar deneyin\n")
+        self.key = bytes(g_input, 'utf-8')
+
         with open(key_file, 'wb') as f:
             f.write(self.key)
 

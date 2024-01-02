@@ -1,12 +1,9 @@
 Metadata-Version: 2.1
-Name: image-encryption
+Name: image_encryption
 Version: 0.1
 Summary: Image Encryption Application For Linux
-Home-page: UNKNOWN
+Home-page: 
 Author: Muhammed Ali Bekdaş
 Author-email: m.ali.software.dev@gmail.com
-License: UNKNOWN
-Platform: UNKNOWN
-
-UNKNOWN
-
+Requires-Dist: Crypto
+Requires-Dist: argparse
