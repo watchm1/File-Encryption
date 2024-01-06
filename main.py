@@ -1,5 +1,6 @@
 from encryptor import FileEncryptor
 from app import Application
+# uygulamanin configure edildigi ve baslatildigi fonksiyon
 
 def main():
     app = Application()

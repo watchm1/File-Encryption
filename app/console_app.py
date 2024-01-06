@@ -12,6 +12,7 @@ from encryptor.handle_key import AESManager
 class Application():
 
     def __init__(self) -> None:
+        # constructor icinde belirli directory'leri sistemden aliyoruz.
         self.home_directory = os.path.dirname(sys.modules['__main__'].__file__)
         self.ssh_directory = os.path.join(self.home_directory, ".ssh")
         self.private_key_file_path = os.path.join(self.ssh_directory, "encryption_key_private.pem")
